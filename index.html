@@ -3,12 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <title>Connecting Mochi...</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --cream: #fdf0f4;
+    --warm-tan: #f5c2d4;
+    --caramel: #b06080;
+    --rust: #e85d8a;
+    --deep: #4a1a2e;
+    --shadow: rgba(74,26,46,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    margin: 0;
-    font-family: Georgia, serif;
-    background: #faf6f0;
-    color: #3d2314;
+    background: linear-gradient(160deg, #fdf0f4, #fce4ed);
+    font-family: 'Lora', Georgia, serif;
+    color: var(--deep);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,30 +29,97 @@
     text-align: center;
     padding: 32px;
   }
-  .cat { font-size: 3.5rem; animation: bounce 1s ease infinite alternate; }
+
+  .cat { font-size: 3rem; animation: bounce 1s ease infinite alternate; }
   @keyframes bounce { to { transform: translateY(-10px); } }
-  h2 { font-style: italic; color: #9b5c3a; margin: 0; font-size: 1.4rem; }
-  p { font-family: monospace; font-size: 0.8rem; color: #c9956a; margin: 0; max-width: 360px; line-height: 1.7; }
+
+  h2 {
+    font-style: italic;
+    color: var(--rust);
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--caramel);
+    max-width: 360px;
+    line-height: 1.8;
+  }
+
   .key-box {
-    font-family: monospace; font-size: 0.8rem;
-    background: #e8d5b7; padding: 12px 18px; border-radius: 10px;
-    word-break: break-all; max-width: 420px; width: 100%;
-    color: #3d2314; border: 1.5px solid #c9956a;
-    user-select: all; cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    background: #fff5f8;
+    padding: 12px 18px;
+    border-radius: 12px;
+    word-break: break-all;
+    max-width: 420px;
+    width: 100%;
+    color: var(--deep);
+    border: 1.5px solid var(--warm-tan);
+    user-select: all;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--shadow);
   }
+
   .copy-btn {
-    padding: 10px 22px; background: #9b5c3a; color: white;
-    border: none; border-radius: 10px; font-family: monospace;
-    font-size: 0.82rem; cursor: pointer; transition: background 0.2s;
+    padding: 10px 24px;
+    background: var(--rust);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 3px 0 0 #c04070, 0 4px 12px var(--shadow);
   }
-  .copy-btn:hover { background: #c9956a; }
+
+  .copy-btn:hover {
+    background: #d04478;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 0 0 #c04070, 0 6px 16px var(--shadow);
+  }
+
+  .copy-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 #c04070;
+  }
+
   .instructions {
-    background: white; border: 1.5px solid #e8d5b7; border-radius: 12px;
-    padding: 16px 20px; max-width: 420px; width: 100%;
-    font-family: monospace; font-size: 0.72rem; color: #9b5c3a;
-    line-height: 1.8; text-align: left;
+    background: #fff5f8;
+    border: 1.5px solid var(--warm-tan);
+    border-radius: 14px;
+    padding: 16px 20px;
+    max-width: 420px;
+    width: 100%;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--caramel);
+    line-height: 2;
+    text-align: left;
+    box-shadow: 0 2px 8px var(--shadow);
   }
-  .instructions b { color: #3d2314; }
+
+  .instructions b { color: var(--deep); }
+
+  #successContent {
+    display: none;
+    width: 100%;
+    max-width: 420px;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  #errorMsg {
+    display: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: #c0392b;
+  }
 </style>
 </head>
 <body>
@@ -49,8 +127,8 @@
 <div class="cat" id="catEmoji">🐱</div>
 <h2 id="msg">Reading your key...</h2>
 
-<div id="successContent" style="display:none;width:100%;max-width:420px;display:none;flex-direction:column;align-items:center;gap:14px;">
-  <p>Your Pollinations key — click to copy, then paste it into the game:</p>
+<div id="successContent">
+  <p class="subtitle">Your Pollinations key — click to copy, then paste it into the game:</p>
   <div class="key-box" id="keyBox" onclick="copyKey()" title="Click to copy"></div>
   <button class="copy-btn" onclick="copyKey()" id="copyBtn">📋 Copy Key</button>
   <div class="instructions">
@@ -58,16 +136,14 @@
     1. Copy the key above<br>
     2. Switch back to the Mochi game tab<br>
     3. Paste it into the <b>Step 2</b> box<br>
-    4. Click <b>Let's go →</b>
+    4. Click <b>Wake her up!</b>
   </div>
 </div>
 
-<p id="errorMsg" style="display:none;color:#c0392b;">No key found — did you cancel? You can close this tab and try again.</p>
+<p id="errorMsg">No key found — did you cancel? You can close this tab and try again.</p>
 
 <script>
 (function() {
-  // itch.io strips the hash from iframes, but this page loads directly
-  // in a real browser tab as the OAuth redirect target, so we can read it.
   const fullHref = window.location.href;
   const hashIdx  = fullHref.indexOf('#');
   const fragment = hashIdx !== -1 ? fullHref.slice(hashIdx + 1) : '';
@@ -105,13 +181,14 @@ function copyKey() {
   navigator.clipboard.writeText(key).then(() => {
     const btn = document.getElementById('copyBtn');
     btn.textContent = '✓ Copied!';
-    btn.style.background = '#8aad8a';
+    btn.style.background = '#a8d8c8';
+    btn.style.boxShadow = '0 3px 0 0 #80b8a8';
     setTimeout(() => {
       btn.textContent = '📋 Copy Key';
-      btn.style.background = '#9b5c3a';
+      btn.style.background = 'var(--rust)';
+      btn.style.boxShadow = '0 3px 0 0 #c04070, 0 4px 12px var(--shadow)';
     }, 2000);
   }).catch(() => {
-    // Fallback: select the text
     const box = document.getElementById('keyBox');
     const range = document.createRange();
     range.selectNode(box);
